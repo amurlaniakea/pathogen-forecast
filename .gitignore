@@ -1,0 +1,20 @@
+.venv/
+.venv
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+credentials/
+.hermes/
+.gnupg/
+.aws/
+.env
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+data/         # dataset local descargado (opcional)
+*.csv
+*.xlsx
+!tests/fixtures/*.csv
