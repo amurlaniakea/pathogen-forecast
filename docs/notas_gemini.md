@@ -32,3 +32,10 @@ Extraído del contexto verificado del usuario. NO es contenido generado por mode
 ## Advertencia verificada
 - No usar datos observados como índices puros sin derivación matemática. El dataset es evidencia, no predicción.
 - Para predicción de crecimiento: calcular beta a partir de casos nuevos diarios, derivar R0 = beta / gamma (para SIR básico), y modelar Rt como R0 * S(t)/N * factor_inmunidad (o equivalente para SEIR con vacunación).
+
+## Verificación real del archivo descargado (2026-10-14)
+Archivo: `/tmp/covid_dataset/COVID19_Complete_Dataset/covid19_complete_20260829.csv`
+- Columnas confirmadas (`python csv.DictReader`): 73 columnas.
+- Variables epidemiológicas presentes: `reproduction_rate`, `icu_patients`, `total_vaccinations`, `people_fully_vaccinated`, `new_cases`, `total_cases`, `case_fatality_rate`, `stringency_index`.
+- `reproduction_rate` existe como columna numérica directa en el dataset. Esto confirma que el Rt efectivo es observable y variable (no constante), como indicó Gemini.
+- Licencia verificada por `kaggle datasets download`: `apache-2.0` (compatible con AGPL-3.0).

@@ -1,0 +1,28 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Instalar dependencias locales
+        run: pip install -e ".[dev]"
+      - name: Verificar sintaxis
+        run: python -m compileall . --exclude-dir=.git --exclude-dir=__pycache__ --exclude-dir=.venv
+      - name: Lint (ruff)
+        run: ruff check . --exclude=tests
+      - name: Tests
+        run: python -m pytest tests/ -v --tb=short
+        env:
+          CI: "true"
+      - name: Verificar licencia en archivos
+        run: |
+          grep -rni "SPDX-License-Identifier: AGPL-3.0-or-later" src/ tests/
+          if grep -rni "apache\|mit\b" . --include="*.py" --include="*.md" --include="*.toml" --exclude-dir=.git; then echo "ERROR: referencias prohibidas a Apache/MIT"; exit 1; fi
