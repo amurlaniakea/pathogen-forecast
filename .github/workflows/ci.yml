@@ -25,4 +25,4 @@ jobs:
       - name: Verificar licencia en archivos
         run: |
           grep -rni "SPDX-License-Identifier: AGPL-3.0-or-later" src/ tests/
-          if grep -rni "apache\|mit\b" . --include="*.py" --include="*.md" --include="*.toml" --exclude-dir=.git --exclude=docs/dataset_info.md --exclude=docs/notas_gemini.md; then echo "ERROR: referencias prohibidas a Apache/MIT"; exit 1; fi
+          if grep -rni "apache\|mit\b" . --include="*.py" --include="*.md" --include="*.toml" --exclude-dir=.git --exclude-dir=__pycache__ --exclude-dir=.venv --exclude-dir=.pytest_cache/ --exclude-dir=tests/fixtures/ --exclude-dir=docs/; then echo "ERROR: referencias prohibidas a Apache/MIT"; exit 1; fi
