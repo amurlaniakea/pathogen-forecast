@@ -35,7 +35,7 @@ Este repositorio estructura un flujo SDD para calcular R0 y el Rt variable a par
 pip install -e ".[dev]"
 ```
 
-## Uso
+## Uso básico (simulación SIR)
 
 ```python
 from src.epimodels import ModeloSIR
@@ -43,6 +43,17 @@ from src.epimodels import ModeloSIR
 modelo = ModeloSIR(beta=0.3, gamma=0.1, N=1_000_000)
 t, y = modelo.simular(S0=999_900, I0=100, R0=0, dias=365)
 ```
+
+## Uso visual interactivo (mapamundi + calibración real)
+
+```bash
+streamlit run app/app.py
+```
+
+La interfaz permite:
+- Ajustar `R` de contagiosidad (`reproduction_rate` del dataset real).
+- Seleccionar país inicial y población.
+- Observar la expansión pandémica simulada en un mapa mundial interactivo (`folium`).
 
 ## Tests
 
