@@ -3,11 +3,12 @@
 # Copyright (C) 2026 Pedro Sordo Martínez <amurlaniakea@gmail.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-import streamlit as st
-import folium
-from streamlit_folium import st_folium
-from pathlib import Path
 import sys
+from pathlib import Path
+
+import folium
+import streamlit as st
+from streamlit_folium import st_folium
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
@@ -43,7 +44,7 @@ if datos:
     try:
         beta_cal, gamma_cal = optimizador.calibrar(N=poblacion)
         st.success(f"Calibración real completada: beta={beta_cal:.3f}, gamma={gamma_cal:.3f}, R0={beta_cal/gamma_cal:.2f}")
-    except Exception as e:
+    except Exception as e:  # nosec BLE001 - fallback intencional para datos sintéticos/reales
         beta_cal, gamma_cal = 0.3, 0.1
         st.warning(f"Calibración con datos sintéticos de respaldo (error con datos reales: {e})")
 else:
@@ -76,6 +77,7 @@ folium.CircleMarker(
 
 # Añadir puntos simulados de expansión (simplificado: puntos aleatorios alrededor del mundo)
 import random
+
 random.seed(42)
 for _ in range(20):
     lat = random.uniform(-60, 60)
