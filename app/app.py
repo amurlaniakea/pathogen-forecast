@@ -44,7 +44,7 @@ if datos:
     try:
         beta_cal, gamma_cal = optimizador.calibrar(N=poblacion)
         st.success(f"Calibración real completada: beta={beta_cal:.3f}, gamma={gamma_cal:.3f}, R0={beta_cal/gamma_cal:.2f}")
-    except Exception as e:  # nosec BLE001 - fallback intencional para datos sintéticos/reales
+    except (ValueError, RuntimeError) as e:
         beta_cal, gamma_cal = 0.3, 0.1
         st.warning(f"Calibración con datos sintéticos de respaldo (error con datos reales: {e})")
 else:
