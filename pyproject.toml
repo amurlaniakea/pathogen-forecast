@@ -17,7 +17,6 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GNU Affero General Public License v3",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -34,7 +33,7 @@ dev = ["pytest>=8.0", "ruff>=0.16"]
 
 [tool.setuptools]
 package-dir = { "" = "src" }
-packages = ["epimodels", "data_loader", "optimizer"]
+py-modules = ["epimodels", "data_loader", "optimizer"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

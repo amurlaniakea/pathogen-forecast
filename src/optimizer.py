@@ -5,7 +5,7 @@
 import numpy as np
 from scipy.optimize import minimize
 
-from src.epimodels import ModeloSIR
+from epimodels import ModeloSIR
 
 
 class OptimizadorSIR:
