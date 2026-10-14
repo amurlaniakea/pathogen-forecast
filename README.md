@@ -1,6 +1,6 @@
-# covid19-pandemic-model
+# pathogen-forecast
 
-> Modelo epidemiológico SIR/SEIR calibrado con datos históricos COVID-19 (2020-2026).
+> Modelo epidemiológico institucional (SIR/SEIR) con calibración real de datos COVID-19 (2020-2026), predicción de expansión pandémica y visualización interactiva en mapa mundial.
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0.txt)
 

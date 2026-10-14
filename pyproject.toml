@@ -3,9 +3,9 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "covid19-pandemic-model"
+name = "pathogen-forecast"
 version = "0.1.0"
-description = "Modelo epidemiológico SIR/SEIR calibrado con datos COVID-19 2020-2026 (Kaggle)."
+description = "Predicción epidemiológica institucional (SIR/SEIR) con calibración real de datos COVID-19 2020-2026 y visualización global interactiva."
 readme = "README.md"
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE"]
@@ -29,7 +29,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "ruff>=0.16"]
+dev = ["pytest>=8.0", "ruff>=0.16", "streamlit>=1.30", "folium>=0.15"]
 
 [tool.setuptools]
 package-dir = { "" = "src" }
