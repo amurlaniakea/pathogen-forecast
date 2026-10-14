@@ -19,5 +19,5 @@ class DataLoader:
         with open(self.ruta, newline="", encoding="utf-8") as f:
             lector = csv.DictReader(f)
             for fila in lector:
-                filas.append(fila)
+                filas.append(fila.copy())
         return filas

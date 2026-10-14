@@ -15,7 +15,7 @@ class ModeloSIR:
         self.N = N  # población base (simulada)
 
     def derivadas(self, t, y):
-        S, I, R = y
+        S, I, _R = y
         dS = -self.beta * S * I / self.N
         dI = self.beta * S * I / self.N - self.gamma * I
         dR = self.gamma * I
