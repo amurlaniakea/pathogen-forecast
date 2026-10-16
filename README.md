@@ -1,3 +1,13 @@
+---
+title: Pathogen Forecast
+emoji: 🦠
+colorFrom: blue
+colorTo: green
+sdk: streamlit
+app_file: app/app.py
+pinned: false
+---
+
 # pathogen-forecast
 
 > Modelo epidemiológico institucional (SIR/SEIR) con calibración real de datos COVID-19 (2020-2026), predicción de expansión pandémica y visualización interactiva en mapa mundial.
