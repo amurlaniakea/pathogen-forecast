@@ -10,7 +10,7 @@ import streamlit as st
 from streamlit_folium import st_folium
 
 from data_loader import DataLoader
-from epimodels import ModeloSIR
+from epimodels import ModeloSEIR
 from optimizer import OptimizadorSIR
 
 st.set_page_config(page_title="pathogen-forecast", layout="wide")
@@ -51,18 +51,20 @@ else:
     beta_cal, gamma_cal = 0.3, 0.1
     st.info("Usando parámetros por defecto (sin datos disponibles).")
 
-# Simulación
-modelo = ModeloSIR(beta=beta_cal, gamma=gamma_cal, N=poblacion)
-t, y = modelo.simular(S0=poblacion - 100, I0=100, R0=0, dias=dias)
+# Simulación SEIR (con latencia)
+modelo = ModeloSEIR(beta=beta_cal, gamma=gamma_cal, sigma=0.2, N=poblacion)
+t, y = modelo.simular(S0=poblacion - 100, E0=50, I0=100, R0=0, dias=dias)
 
-# Métricas
-S_final, I_final, R_final = y[:, -1]
-col3, col4, col5 = st.columns(3)
+# Métricas SEIR
+S_final, E_final, I_final, R_final = y[:, -1]
+col3, col4, col5, col6 = st.columns(4)
 with col3:
     st.metric("Susceptibles finales", f"{S_final:,.0f}")
 with col4:
-    st.metric("Infectados finales", f"{I_final:,.0f}")
+    st.metric("Expuestos finales", f"{E_final:,.0f}")
 with col5:
+    st.metric("Infectados finales", f"{I_final:,.0f}")
+with col6:
     st.metric("Recuperados finales", f"{R_final:,.0f}")
 
 # Mapa interactivo (mapamundi básico con ubicación inicial)

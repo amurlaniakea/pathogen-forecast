@@ -6,7 +6,7 @@
 
 import numpy as np
 
-from epimodels import ModeloSIR
+from epimodels import ModeloSEIR, ModeloSIR
 
 
 def test_sir_simula():
@@ -14,6 +14,12 @@ def test_sir_simula():
     t, y = modelo.simular(S0=99_900, I0=100, R0=0, dias=30)
     assert len(t) == 31
     assert len(y) == 3
+
+
+def test_seir_conserva_poblacion():
+    modelo = ModeloSEIR(beta=0.3, gamma=0.1, sigma=0.2, N=100_000)
+    _, y = modelo.simular(S0=99_900, E0=0, I0=100, R0=0, dias=30)
+    assert np.allclose(np.sum(y, axis=0), modelo.N)
 
 
 def test_sir_conserva_poblacion():
