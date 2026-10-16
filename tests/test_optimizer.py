@@ -11,7 +11,7 @@ from optimizer import OptimizadorSIR
 def test_calibracion_sintetica():
     ruta = Path(__file__).resolve().parent / "fixtures" / "synthetic_covid.csv"
     loader = DataLoader(ruta)
-    datos = loader.cargar_filas()
+    datos = loader.cargar_datos()
     optimizador = OptimizadorSIR(datos)
     beta, gamma = optimizador.calibrar()
     assert beta > 0
