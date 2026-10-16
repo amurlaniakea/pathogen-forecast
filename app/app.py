@@ -3,14 +3,11 @@
 # Copyright (C) 2026 Pedro Sordo Martínez <amurlaniakea@gmail.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-import sys
 from pathlib import Path
 
 import folium
 import streamlit as st
 from streamlit_folium import st_folium
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from data_loader import DataLoader
 from epimodels import ModeloSIR
@@ -29,14 +26,17 @@ with col2:
     pais = st.selectbox("País inicial (ejemplo del dataset)", ["Spain", "Afghanistan", "United States", "Global"])
     poblacion = st.number_input("Población base (millones)", 1.0, 8000.0, 8.0, 1.0) * 1_000_000
 
-# Datos sintéticos por defecto (o dataset real si existe)
-ruta_dataset = Path("/tmp/covid_dataset/COVID19_Complete_Dataset/covid19_complete_20260829.csv")
+import os
+
+# Datos sintéticos por defecto (o dataset real si existe, vía env var)
+ruta_env = os.getenv("COVID_DATASET_PATH", "")
+ruta_dataset = Path(ruta_env) if ruta_env else Path(__file__).resolve().parent.parent / "tests" / "fixtures" / "synthetic_covid.csv"
 if ruta_dataset.exists():
     loader = DataLoader(ruta_dataset)
-    datos = loader.cargar_filas()
+    datos = loader.cargar_datos()
 else:
     loader = DataLoader(Path(__file__).resolve().parent.parent / "tests" / "fixtures" / "synthetic_covid.csv")
-    datos = loader.cargar_filas()
+    datos = loader.cargar_datos()
 
 # Calibración (opcional, con datos sintéticos/reales)
 if datos:
