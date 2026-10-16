@@ -17,7 +17,7 @@ jobs:
       - name: Verificar sintaxis
         run: python -m compileall . -x ".git|__pycache__|.venv"
       - name: Lint (ruff)
-        run: ruff check . --exclude=tests
+        run: ruff check .
       - name: Tests
         run: python -m pytest tests/ -v --tb=short
         env:
