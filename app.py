@@ -1,3 +1,4 @@
+# SPDX-FileCopyrightText: 2026 Pedro Sordo Martínez <amurlaniakea@gmail.com>
 #!/usr/bin/env python3
 """Interfaz visual interactiva para pathogen-forecast (streamlit + folium)."""
 # Copyright (C) 2026 Pedro Sordo Martínez <amurlaniakea@gmail.com>

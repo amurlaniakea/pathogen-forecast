@@ -1,3 +1,4 @@
+# SPDX-FileCopyrightText: 2026 Pedro Sordo Martínez <amurlaniakea@gmail.com>
 """Tests del cargador de datos con fixture sintético (independiente del dataset real)."""
 # Copyright (C) 2026 Pedro Sordo Martínez <amurlaniakea@gmail.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
