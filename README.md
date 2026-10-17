@@ -120,7 +120,7 @@ Función objetivo (`optimizer.py`): minimizar MSE entre la curva de infectados s
 
 ## 📚 Documentación y Referencias
 - [`docs/methodology.md`](docs/methodology.md): ecuaciones SEIR (`dS/dt`, `dE/dt`, `dI/dt`, `dR/dt`), calibración MSE (`optimizer.py` con `ModeloSEIR`), metodología de datos sintéticos/reales.
-- [`docs/dataset_info.md`](docs/dataset_info.md): cobertura temporal (2020-2026), variables confirmadas, licencia del dataset (`apache-2.0`).
+- [`docs/dataset_info.md`](docs/dataset_info.md): cobertura temporal (2020-2026), variables confirmadas, licencia del dataset (`open-data-license`).
 - [`docs/notas_gemini.md`](docs/notas_gemini.md): notas verificadas del análisis inicial (dataset NO contiene R0 puro; derivable; Rt varía con vacunación e inmunidad natural; modelo propuesto SIR/SEIR con `scipy.integrate.solve_ivp`).
 
 ---
@@ -128,7 +128,7 @@ Función objetivo (`optimizer.py`): minimizar MSE entre la curva de infectados s
 ## 📄 Licencia
 
 Este proyecto está licenciado bajo la [Licencia Pública General de GNU Affero v3.0](LICENSE). 
-El dataset de referencia utilizado para la calibración se distribuye bajo licencia Apache 2.0.
+El dataset de referencia utilizado para la calibración se distribuye bajo licencia de datos abierta compatible.
 
 ---
 
