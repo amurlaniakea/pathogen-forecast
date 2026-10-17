@@ -130,6 +130,37 @@ Función objetivo (`optimizer.py`): minimizar MSE entre la curva de infectados s
 
 ---
 
+---
+
+## 🔮 Aplicabilidad a Futuras Pandemias
+
+Este repositorio **sí sirve para prever el crecimiento de una pandemia futura causada por otros patógenos similares**, y no está limitado únicamente al COVID-19. A nivel técnico, la herramienta está estructurada para ser reutilizable, aunque su calibración inicial se haya realizado con datos reales del COVID-19 (2020-2026).
+
+### ¿Por qué sirve para futuras pandemias?
+
+El motor del software se basa en el modelo **SEIR (Susceptibles, Expuestos, Infectados, Recuperados) con latencia**. Este es el modelo estándar institucional utilizado a nivel global para simular la dinámica de cualquier virus respiratorio de transmisión humana directa, como por ejemplo:
+
+- Nuevas cepas de **Gripe Aviar altamente patógena (HPAI)** con mutación humana.
+- Futuros brotes de **Influenza (Gripe)** estacional o pandémica.
+- Cualquier virus respiratorio desconocido (la llamada **Enfermedad X**).
+
+Si surge un nuevo patógeno, un epidemiólogo solo tendría que modificar los parámetros biológicos en el archivo de configuración o en `src/epimodels.py`: la tasa de transmisión (`β`), el período de incubación (`σ`) y el período de recuperación (`γ`). El simulador calcularía la expansión con exactamente la misma lógica matemática.
+
+### Límites del repositorio (para qué NO sirve)
+
+No todos los patógenos se comportan igual. Este repositorio requeriría una reescritura del modelo para predecir:
+
+- **Enfermedades por vectores**: No aplica para Dengue, Zika o Malaria, ya que el modelo SEIR actual no incluye variables para la población de mosquitos, climas locales o tasas de picadura.
+- **Transmisión no respiratoria**: No modela adecuadamente enfermedades de transmisión sexual (como el VIH) o por agua contaminada (Cólera), cuyos patrones de contacto e infección humana son radicalmente distintos.
+
+### El verdadero valor para el futuro: El Calibrador
+
+La parte más valiosa del repositorio no es el mapa visual, sino el archivo `src/optimizer.py`. Cuenta con un **calibrador de errores MSE (Error Cuadrático Medio)** que permite ajustar el modelo a datos reales en tiempo real.
+
+Si en el futuro surge un brote, a medida que las autoridades sanitarias publiquen los primeros datos de infectados de las primeras semanas, este script procesará esos datos y calculará automáticamente la agresividad real del nuevo virus, permitiendo proyectar cuándo ocurrirá el pico de saturación hospitalaria antes de que suceda.
+
+**En resumen**: El software utiliza el COVID-19 como caso de éxito y prueba de concepto para demostrar que sus matemáticas funcionan con datos reales, pero la arquitectura del código está diseñada como una **plantilla matemática universal** lista para afrontar el próximo brote de transmisión respiratoria.
+
 ## 📚 Documentación y Referencias
 - [`docs/methodology.md`](docs/methodology.md): ecuaciones SEIR (`dS/dt`, `dE/dt`, `dI/dt`, `dR/dt`), calibración MSE (`optimizer.py` con `ModeloSEIR`), metodología de datos sintéticos/reales.
 - [`docs/dataset_info.md`](docs/dataset_info.md): cobertura temporal (2020-2026), variables confirmadas, licencia del dataset (`open-data-license`).
