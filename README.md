@@ -30,11 +30,23 @@ El Space interactivo está disponible públicamente:
 
 ## 📦 Instalación
 
-```bash
-pip install -e ".[dev]"
-```
+Se recomienda usar Python 3.11 o superior.
 
-Requiere Python `>=3.11`. Dependencias: `numpy>=1.24`, `scipy>=1.10`, `pandas>=2.0`, `streamlit>=1.30`, `folium>=0.15`.
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/amurlaniakea/pathogen-forecast.git
+cd pathogen-forecast
+
+# 2. Crear y activar un entorno virtual (recomendado)
+python -m venv venv
+source venv/bin/activate  # En Windows: venv\Scripts\activate
+
+# 3. Instalar dependencias
+pip install -e ".[dev]"
+
+# 4. Ejecutar la aplicación
+streamlit run app.py
+```
 
 ---
 
