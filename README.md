@@ -138,6 +138,6 @@ El dataset de referencia utilizado para la calibración se distribuye bajo licen
 ## 📧 Contacto
 
 - **Autor**: Pedro Sordo Martínez
-- **GitHub**: [amurlaniakea/pathogen-forecast](https://github.com/amurlaniakea/pathogen-forecast)
+- **GitHub**: [amurlaniakea/pathogen-forecast](https://github.com/amurlaniakea/pathogen-forecast) — `amurlaniakea@gmail.com`
 - **Hugging Face**: [MagoPredator](https://huggingface.co/MagoPredator)
 
