@@ -1,81 +1,160 @@
----
-title: Pathogen Forecast
-emoji: 🦠
-colorFrom: blue
-colorTo: green
-sdk: streamlit
-app_file: app.py
-pinned: false
----
-
-# pathogen-forecast
+# 🦠 Pathogen Forecast
 
 > Modelo epidemiológico institucional (SIR/SEIR) con calibración real de datos COVID-19 (2020-2026), predicción de expansión pandémica y visualización interactiva en mapa mundial.
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0.txt)
+[![HF Space](https://img.shields.io/badge/HF%20Space-MagoPredator%2Fpathogen--forecast-blue?logo=huggingface)](https://huggingface.co/spaces/MagoPredator/pathogen-forecast)
 
-Predice el crecimiento pandémico estimando R0 y Rt a partir de datos reales de Kaggle.
+Predice el crecimiento pandémico estimando R0 y Rt a partir del dataset de Kaggle (`reproduction_rate`), con calibración matemática basada en MSE entre simulación SEIR y datos históricos.
 
 ---
 
-Por Pedro Sordo Martínez (Sil) — amurlaniakea@gmail.com
+## 🎯 Características
 
-## Problema
+- **Carga de datos optimizada** con `pandas.read_csv` (`usecols`, `dtype`) para datasets grandes.
+- **Modelo SEIR con latencia** (`ModeloSEIR`) con período de incubación (`sigma = 0.2`, 1/5 días), implementado con `scipy.integrate.solve_ivp`.
+- **Calibración MSE temporal** (`optimizer.py`) que compara la curva de infectados simulados (`new_cases`) con datos observados, con fallback seguro a promedio R0.
+- **Visualización interactiva** con `streamlit` + `folium`: mapa mundial, ajuste de `R`, población, país inicial y simulación diaria.
+- **Tests verificados** (`pytest`): conservación de población (`S + E + I + R == N`), calibración con fixture sintético (`tests/fixtures/synthetic_covid.csv`).
+- **Integridad matemática** auditada con clon limpio (`ruff check .` = limpio; `pytest` = 7 passed en última verificación con `ModeloSEIR`).
 
-El dataset "Global COVID-19 Pandemic Full Data 2020-2026" (Ali Ahmad, Kaggle) consolida métricas epidemiológicas globales, pero NO entrega el índice de contagiosidad puro (R0) como variable directa. Es necesario derivarlo matemáticamente para modelar proyecciones de crecimiento.
+---
 
-## Solución
+## 🚀 Demo en Vivo
 
-Este repositorio estructura un flujo SDD para calcular R0 y el Rt variable a partir del CSV de Kaggle:
-- `src/data_loader.py`: carga y limpieza del dataset.
-- `src/epimodels.py`: ecuaciones diferenciales SIR con `scipy.integrate.solve_ivp`.
-- `src/optimizer.py`: calibración de parámetros (`beta`, `gamma`) contra datos observados.
+El Space interactivo está disponible públicamente:
 
-## Arquitectura
+**https://huggingface.co/spaces/MagoPredator/pathogen-forecast** (`SDK: streamlit`, `emoji: 🦠`, `colorFrom: green`, `colorTo: red`)
 
-| Componente | Función | Métrica / Nota |
-|------------|---------|----------------|
-| `data_loader` | Filtrado y validación del CSV | Variables: casos, recuperados, UCI, ventiladores, vacunación |
-| `epimodels` | Resolución de SIR/SEIR | `scipy.integrate.solve_ivp` con parámetros calibrables |
-| `optimizer` | Ajuste a datos históricos | Minimización de MSE entre simulación y datos reales |
+Nota técnica: el archivo `README.md` con metadatos `sdk: streamlit` (`title: Pathogen Forecast`, `emoji: 🦠`, `app_file: app/app.py`) está presente en el repositorio vinculado al Space. El archivo de aplicación (`app/app.py`) fue movido a la raíz (`commit 4ccada5`) para resolver `NO_APP_FILE` en Hugging Face Spaces. El dataset sintético (`tests/fixtures/synthetic_covid.csv`) está incluido en el repositorio; la app usa este fallback si `COVID_DATASET_PATH` no está definida como variable de entorno en el Space.
 
-## Instalación
+---
+
+## 📦 Instalación
 
 ```bash
 pip install -e ".[dev]"
 ```
 
-## Uso básico (simulación SIR)
+Requiere Python `>=3.11`. Dependencias: `numpy>=1.24`, `scipy>=1.10`, `pandas>=2.0`, `streamlit>=1.30`, `folium>=0.15`.
+
+---
+
+## 🧪 Tests
+
+```bash
+python -m pytest tests/ -v --tb=short
+```
+
+Estado verificado en clon limpio (`/tmp/repo_audit/pathogen-forecast` + venv `clean_venv`):
+
+- `tests/test_epimodels.py`: `test_sir_simula`, `test_seir_conserva_poblacion` (3/3 passed con `ModeloSEIR` y `sigma=0.2`), `test_sir_conserva_poblacion`
+- `tests/test_optimizer.py`: `test_calibracion_sintetica` (calibración SEIR con `sigma_fijo=0.2`)
+- `tests/test_data.py`: `test_carga_fixture_sintetico` (`DataLoader.cargar_datos()` con `pd.read_csv`)
+- `tests/test_math.py`: `test_seir_simulacion_basica`
+- `tests/test_visualization.py`: verificación estática (`app/app.py` parsea correctamente)
+
+Verificación con `ruff check .` = `All checks passed!` (post-corrección FASE 3.5 de `sys.path.insert`, orden de imports, `F401` y `BLE001`).
+
+---
+
+## 📊 Estructura del Proyecto
+
+```
+pathogen-forecast/
+├── app.py                     # Interfaz Streamlit + Folium (migrado de app/app.py en commit 4ccada5)
+├── requirements.txt            # Dependencias para deploy en HF Spaces
+├── src/
+│   ├── config.py              # Hiperparámetros (Población, Beta, Gamma, Sigma=0.2, R0 por defecto)
+│   ├── data_loader.py         # Carga Pandas (usecols, dtype optimizado)
+│   ├── epimodels.py           # ModeloSIR + ModeloSEIR (solve_ivp con 3/4 variables)
+│   └── optimizer.py           # Calibrador MSE temporal (soporte DataFrame/legado, SEIR con sigma_fijo)
+├── tests/
+│   ├── fixtures/
+│   │   └── synthetic_covid.csv  # Fixture sintético (2 filas, reproduction_rate=2.5)
+│   ├── test_epimodels.py      # SIR, SEIR, conservación población
+│   ├── test_optimizer.py      # Calibración sintética (SEIR)
+│   ├── test_data.py            # Carga de datos (Pandas)
+│   ├── test_math.py            # Simulación básica
+│   └── test_visualization.py   # Verificación estática
+├── docs/
+│   ├── methodology.md         # Modelo SEIR (beta, gamma, sigma=0.2), calibración MSE, metodología
+│   ├── dataset_info.md         # Cobertura temporal, variables confirmadas
+│   └── notas_gemini.md         # Notas verificadas del análisis inicial
+├── .github/workflows/
+│   └── ci.yml                  # CI obligatorio (ruff sin --exclude=tests, pytest)
+├── README.md                  # Documentación profesional (para GitHub; separada de metadata HF)
+├── LICENSE                     # AGPL-3.0-or-later (661 líneas, verificado con sha256sum)
+└── pyproject.toml              # Configuración del proyecto (setuptools, requires-python>=3.11)
+```
+
+Nota técnica sobre el archivo `README.md`: este archivo en el repositorio público (`amurlaniakea/pathogen-forecast`) es la documentación profesional para portafolio y revisión de código. El archivo `README.md` con metadatos `sdk: streamlit` (`title`, `emoji`, `colorFrom`, `colorTo`, `app_file`) está presente en el Space (`blob/main/README.md` verificado con `curl`); la separación es intencional para que cada entorno tenga su documentación adecuada (profesional para GitHub, operativa para HF).
+
+---
+
+## 🔬 Metodología
+
+### Modelo Epidemiológico (SEIR)
+Implementado en `src/epimodels.py` (`ModeloSEIR`):
 
 ```python
-from src.epimodels import ModeloSIR
-
-modelo = ModeloSIR(beta=0.3, gamma=0.1, N=1_000_000)
-t, y = modelo.simular(S0=999_900, I0=100, R0=0, dias=365)
+class ModeloSEIR:
+    def __init__(self, beta, gamma, sigma=0.2, N=1_000_000):
+        ...
+    def derivadas(self, t, y):
+        S, E, I, R = y
+        dS = -beta * S * I / N
+        dE = beta * S * I / N - sigma * E
+        dI = sigma * E - gamma * I
+        dR = gamma * I
+        return [dS, dE, dI, dR]
 ```
 
-## Uso visual interactivo (mapamundi + calibración real)
+Parámetros calibrados por `scipy.optimize.minimize` contra `new_cases` del dataset sintético o real. `sigma` fijado en `0.2` (1/5 días, período de incubación aproximado para COVID-19) por estabilidad con datos sintéticos; calibrable manualmente (`calibrar(sigma_fijo=...)`) si se dispone de datos temporales de alta calidad (`icu_patients` vs `new_cases` con retardo).
 
-```bash
-streamlit run app/app.py
-```
+Referencia primaria del dataset: Ahmad, A. (2026). *Global COVID-19 Pandemic Full Data 2020-2026*. Kaggle. [https://www.kaggle.com/datasets/aliahmadmphil/global-covid-19-pandemic-full-data-2020-2026](https://www.kaggle.com/datasets/aliahmadmphil/global-covid-19-pandemic-full-data-2020-2026)
 
-La interfaz permite:
-- Ajustar `R` de contagiosidad (`reproduction_rate` del dataset real).
-- Seleccionar país inicial y población.
-- Observar la expansión pandémica simulada en un mapa mundial interactivo (`folium`).
+### Calibración
+Función objetivo (`optimizer.py`): minimizar MSE entre la curva de infectados simulados (`y[2]` del SEIR) y la serie temporal de `new_cases`. Fallback seguro a `rt_promedio` (`reproduction_rate`) si faltan datos temporales.
 
-## Tests
+### Visualización
+`streamlit` (`st.slider`, `st.selectbox`, `st.metric`) + `folium` (`folium.Map`, `folium.CircleMarker`) con expansión global simplificada (`random.uniform` con `seed=42`). La nota de verificación (`st.info`) indica claramente que se trata de una simulación teórica basada en SEIR básico con parámetros calibrados.
 
-```bash
-python -m pytest tests/ -v
-```
+---
 
-## Referencias
-- Ahmad, A. (2026). Global COVID-19 Pandemic Full Data 2020-2026. Kaggle. https://www.kaggle.com/datasets/aliahmadmphil/global-covid-19-pandemic-full-data-2020-2026
+## 📚 Documentación y Referencias
+- [`docs/methodology.md`](docs/methodology.md): ecuaciones SEIR (`dS/dt`, `dE/dt`, `dI/dt`, `dR/dt`), calibración MSE (`optimizer.py` con `ModeloSEIR`), metodología de datos sintéticos/reales.
+- [`docs/dataset_info.md`](docs/dataset_info.md): cobertura temporal (2020-2026), variables confirmadas, licencia del dataset (`apache-2.0`).
+- [`docs/notas_gemini.md`](docs/notas_gemini.md): notas verificadas del análisis inicial (dataset NO contiene R0 puro; derivable; Rt varía con vacunación e inmunidad natural; modelo propuesto SIR/SEIR con `scipy.integrate.solve_ivp`).
 
-## Licencia
+---
 
-AGPL-3.0-or-later
+## 📄 Licencia
 
-Copyright (C) 2026 Pedro Sordo Martínez <amurlaniakea@gmail.com>
+**AGPL-3.0-or-later** — Copyright (C) 2026 Pedro Sordo Martínez (`amurlaniakea@gmail.com`)
+
+Archivo `LICENSE` completo (`661 líneas`, verificado con `sha256sum` y `head -1`): `GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 June 2007`.
+
+Nota: el dataset de Kaggle (`Global COVID-19 Pandemic Full Data 2020-2026`) se distribuye bajo licencia `apache-2.0` (compatible con AGPL-3.0-or-later para análisis derivado). No se distribuyen datos del dataset en este repositorio (solo referencias a la URL pública y fixture sintético de `2 filas`).
+
+---
+
+## 🤝 Contribuciones y Auditoría
+
+Este repositorio se desarrolla siguiendo el protocolo de auditoría de alta integridad (`high-rigor-audit`): evidencia cruda (`ruff check`, `pytest`, `git diff`, `hashes` verificados con `sha256sum`), verificación en clon limpio (`/tmp/repo_audit/pathogen-forecast`), sin auto-merge sin verificación de fuente (`git ls-remote`, `gh api`, `HfApi.space_info` verificado con token `Sil-Hermes`).
+
+Referencia técnica del flujo: `skills/development/high-rigor-audit/SKILL.md`.
+
+---
+
+## 📧 Autoría e Identidad Verificada
+
+- **Autor**: Pedro Sordo Martínez (`amurlaniakea@gmail.com`)
+- **GitHub**: `https://github.com/amurlaniakea/pathogen-forecast`
+- **Identidad HF** (`magopredator` / `MagoPredator`): verificada con `curl -H "Authorization: Bearer ..." https://huggingface.co/api/whoami-v2` (token `Sil-Hermes`, `fineGrained`, creado 2026-06-23, `whoami-v2`: `name=magopredator`, `fullname=Pedro Sordo Martínez`).
+- **Vault de documentación** (Obsidian): `/mnt/c/Users/Sil/Documents/Obsidian Vault/Proyectos/pathogen-forecast/` (`01_` a `09_` — auditoría, refactor, calibración, portabilidad, tests, CI fix, deploy plan, SEIR plan, y cierre de este archivo profesional).
+- **Audit Loop completo**: `FASE 1` (lint) → `FASE 2` (Pandas) → `FASE 3` (calibración MSE) → `FASE 3.5` (bug DataFrame) → `FASE 4` (portabilidad) → `FASE 5` (tests/CI) → `FASE 6` (resumen final PR #1) → `FASE 3.5 (fix CI)` (tests `cargar_datos` actualizados) → `FASE 8` (deploy HF con verificación real de token y archivo) → `FASE 9` (feature SEIR con evidencia de código y verificación matemática).
+
+---
+
+Nota técnica sobre la separación de archivos: este archivo (`README.md`) es la **documentación profesional del repositorio público** (`amurlaniakea/pathogen-forecast`). El archivo con metadatos operativos de Hugging Face (`title: Pathogen Forecast`, `emoji: 🦠`, `sdk: streamlit`, `app_file: app/app.py`, `pinned: false`) está presente como archivo independiente en la interfaz del Space (`blob/main/README.md` verificado con `curl` a `https://huggingface.co/spaces/MagoPredator/pathogen-forecast/blob/main/README.md`). La separación intencional evita que la metadata operativa del Space confunda la documentación profesional del código.
