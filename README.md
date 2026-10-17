@@ -54,7 +54,7 @@ Estado verificado en clon limpio (`/tmp/repo_audit/pathogen-forecast` + venv `cl
 - `tests/test_math.py`: `test_seir_simulacion_basica`
 - `tests/test_visualization.py`: verificación estática (`app/app.py` parsea correctamente)
 
-Verificación con `ruff check .` = `All checks passed!` (post-corrección FASE 3.5 de `sys.path.insert`, orden de imports, `F401` y `BLE001`).
+Verificación con `ruff check .` = `All checks passed!`.
 
 ---
 
@@ -141,20 +141,16 @@ Nota: el dataset de Kaggle (`Global COVID-19 Pandemic Full Data 2020-2026`) se d
 
 ## 🤝 Contribuciones y Auditoría
 
-Este repositorio se desarrolla siguiendo el protocolo de auditoría de alta integridad (`high-rigor-audit`): evidencia cruda (`ruff check`, `pytest`, `git diff`, `hashes` verificados con `sha256sum`), verificación en clon limpio (`/tmp/repo_audit/pathogen-forecast`), sin auto-merge sin verificación de fuente (`git ls-remote`, `gh api`, `HfApi.space_info` verificado con token `Sil-Hermes`).
-
-Referencia técnica del flujo: `skills/development/high-rigor-audit/SKILL.md`.
+Este proyecto sigue estándares profesionales de ingeniería de software: verificación determinista (`ruff`, `pytest`), trazabilidad de cambios (`git diff` con hashes verificados) y documentación basada en evidencia. No se realiza merge sin verificación de fuente (`git ls-remote`, `gh api`).
 
 ---
 
 ## 📧 Autoría e Identidad Verificada
 
 - **Autor**: Pedro Sordo Martínez (`amurlaniakea@gmail.com`)
-- **GitHub**: `https://github.com/amurlaniakea/pathogen-forecast`
-- **Identidad HF** (`magopredator` / `MagoPredator`): verificada con `curl -H "Authorization: Bearer ..." https://huggingface.co/api/whoami-v2` (token `Sil-Hermes`, `fineGrained`, creado 2026-06-23, `whoami-v2`: `name=magopredator`, `fullname=Pedro Sordo Martínez`).
-- **Vault de documentación** (Obsidian): `/mnt/c/Users/Sil/Documents/Obsidian Vault/Proyectos/pathogen-forecast/` (`01_` a `09_` — auditoría, refactor, calibración, portabilidad, tests, CI fix, deploy plan, SEIR plan, y cierre de este archivo profesional).
-- **Audit Loop completo**: `FASE 1` (lint) → `FASE 2` (Pandas) → `FASE 3` (calibración MSE) → `FASE 3.5` (bug DataFrame) → `FASE 4` (portabilidad) → `FASE 5` (tests/CI) → `FASE 6` (resumen final PR #1) → `FASE 3.5 (fix CI)` (tests `cargar_datos` actualizados) → `FASE 8` (deploy HF con verificación real de token y archivo) → `FASE 9` (feature SEIR con evidencia de código y verificación matemática).
+- **GitHub**: [amurlaniakea/pathogen-forecast](https://github.com/amurlaniakea/pathogen-forecast)
+- **Identidad HF** (`magopredator` / `MagoPredator`): cuenta verificada en Hugging Face (`huggingface.co/magopredator`).
 
 ---
 
-Nota técnica sobre la separación de archivos: este archivo (`README.md`) es la **documentación profesional del repositorio público** (`amurlaniakea/pathogen-forecast`). El archivo con metadatos operativos de Hugging Face (`title: Pathogen Forecast`, `emoji: 🦠`, `sdk: streamlit`, `app_file: app/app.py`, `pinned: false`) está presente como archivo independiente en la interfaz del Space (`blob/main/README.md` verificado con `curl` a `https://huggingface.co/spaces/MagoPredator/pathogen-forecast/blob/main/README.md`). La separación intencional evita que la metadata operativa del Space confunda la documentación profesional del código.
+Nota técnica: la documentación operativa del Space (`sdk: streamlit`, `emoji`) vive como archivo independiente en la interfaz del Space. Este archivo es exclusivamente profesional.
