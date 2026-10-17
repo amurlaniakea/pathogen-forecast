@@ -139,18 +139,10 @@ Nota: el dataset de Kaggle (`Global COVID-19 Pandemic Full Data 2020-2026`) se d
 
 ---
 
-## 🤝 Contribuciones y Auditoría
-
-Este proyecto sigue estándares profesionales de ingeniería de software: verificación determinista (`ruff`, `pytest`), trazabilidad de cambios (`git diff` con hashes verificados) y documentación basada en evidencia. No se realiza merge sin verificación de fuente (`git ls-remote`, `gh api`).
-
----
-
-## 📧 Autoría e Identidad Verificada
+## 📧 Contacto
 
 - **Autor**: Pedro Sordo Martínez (`amurlaniakea@gmail.com`)
 - **GitHub**: [amurlaniakea/pathogen-forecast](https://github.com/amurlaniakea/pathogen-forecast)
-- **Identidad HF** (`magopredator` / `MagoPredator`): cuenta verificada en Hugging Face (`huggingface.co/magopredator`).
+- **Hugging Face**: [magopredator/pathogen-forecast](https://huggingface.co/spaces/MagoPredator/pathogen-forecast)
 
----
 
-Nota técnica: la documentación operativa del Space (`sdk: streamlit`, `emoji`) vive como archivo independiente en la interfaz del Space. Este archivo es exclusivamente profesional.
