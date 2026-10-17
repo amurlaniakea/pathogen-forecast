@@ -127,8 +127,11 @@ Función objetivo (`optimizer.py`): minimizar MSE entre la curva de infectados s
 
 ## 📄 Licencia
 
-Este proyecto está licenciado bajo la [Licencia Pública General de GNU Affero v3.0](LICENSE). 
-El dataset de referencia utilizado para la calibración se distribuye bajo licencia de datos abierta compatible.
+Este proyecto está licenciado bajo la [GNU Affero General Public License v3.0](LICENSE).
+
+Copyright © 2026 Pedro Sordo Martínez. Todos los derechos reservados.
+
+El dataset de referencia utilizado para la calibración se distribuye bajo licencia Apache 2.0.
 
 ---
 
