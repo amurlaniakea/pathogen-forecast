@@ -162,6 +162,7 @@ Si en el futuro surge un brote, a medida que las autoridades sanitarias publique
 **En resumen**: El software utiliza el COVID-19 como caso de éxito y prueba de concepto para demostrar que sus matemáticas funcionan con datos reales, pero la arquitectura del código está diseñada como una **plantilla matemática universal** lista para afrontar el próximo brote de transmisión respiratoria.
 
 ## 📚 Documentación y Referencias
+- 📝 **[Artículo técnico en DEV Community: pathogen-forecast v1.0](https://dev.to/magopredator/pathogen-forecast-v10-predecir-pandemias-con-datos-reales-y-un-mapa-mundial-interactivo-3hh1)**: Análisis detallado de la arquitectura, calibración matemática y aplicabilidad del modelo.
 - [`docs/methodology.md`](docs/methodology.md): ecuaciones SEIR (`dS/dt`, `dE/dt`, `dI/dt`, `dR/dt`), calibración MSE (`optimizer.py` con `ModeloSEIR`), metodología de datos sintéticos/reales.
 - [`docs/dataset_info.md`](docs/dataset_info.md): cobertura temporal (2020-2026), variables confirmadas, licencia del dataset (`open-data-license`).
 - [`docs/notas_gemini.md`](docs/notas_gemini.md): notas verificadas del análisis inicial (dataset NO contiene R0 puro; derivable; Rt varía con vacunación e inmunidad natural; modelo propuesto SIR/SEIR con `scipy.integrate.solve_ivp`).
