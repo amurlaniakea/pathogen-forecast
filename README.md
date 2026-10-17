@@ -131,11 +131,7 @@ Función objetivo (`optimizer.py`): minimizar MSE entre la curva de infectados s
 
 ## 📄 Licencia
 
-**AGPL-3.0-or-later** — Copyright (C) 2026 Pedro Sordo Martínez (`amurlaniakea@gmail.com`)
-
-Archivo `LICENSE` completo (`661 líneas`, verificado con `sha256sum` y `head -1`): `GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 June 2007`.
-
-Nota: el dataset de Kaggle (`Global COVID-19 Pandemic Full Data 2020-2026`) se distribuye bajo licencia `apache-2.0` (compatible con AGPL-3.0-or-later para análisis derivado). No se distribuyen datos del dataset en este repositorio (solo referencias a la URL pública y fixture sintético de `2 filas`).
+Este proyecto está licenciado bajo la [Licencia Pública General de GNU Affero v3.0](LICENSE). El dataset de referencia utilizado para la calibración se distribuye bajo licencia Apache 2.0.
 
 ---
 
