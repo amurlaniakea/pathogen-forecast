@@ -26,8 +26,6 @@ El Space interactivo está disponible públicamente:
 
 **https://huggingface.co/spaces/MagoPredator/pathogen-forecast** (`SDK: streamlit`, `emoji: 🦠`, `colorFrom: green`, `colorTo: red`)
 
-Nota técnica: el archivo `README.md` con metadatos `sdk: streamlit` (`title: Pathogen Forecast`, `emoji: 🦠`, `app_file: app/app.py`) está presente en el repositorio vinculado al Space. El archivo de aplicación (`app/app.py`) fue movido a la raíz (`commit 4ccada5`) para resolver `NO_APP_FILE` en Hugging Face Spaces. El dataset sintético (`tests/fixtures/synthetic_covid.csv`) está incluido en el repositorio; la app usa este fallback si `COVID_DATASET_PATH` no está definida como variable de entorno en el Space.
-
 ---
 
 ## 📦 Instalación
@@ -84,13 +82,11 @@ pathogen-forecast/
 ├── .github/workflows/
 │   └── ci.yml                  # CI obligatorio (ruff sin --exclude=tests, pytest)
 ├── README.md                  # Documentación profesional (para GitHub; separada de metadata HF)
-├── LICENSE                     # AGPL-3.0-or-later (661 líneas, verificado con sha256sum)
+├── LICENSE                     # AGPL-3.0-or-later
 └── pyproject.toml              # Configuración del proyecto (setuptools, requires-python>=3.11)
 ```
 
-Nota técnica sobre el archivo `README.md`: este archivo en el repositorio público (`amurlaniakea/pathogen-forecast`) es la documentación profesional para portafolio y revisión de código. El archivo `README.md` con metadatos `sdk: streamlit` (`title`, `emoji`, `colorFrom`, `colorTo`, `app_file`) está presente en el Space (`blob/main/README.md` verificado con `curl`); la separación es intencional para que cada entorno tenga su documentación adecuada (profesional para GitHub, operativa para HF).
 
----
 
 ## 🔬 Metodología
 
@@ -124,21 +120,21 @@ Función objetivo (`optimizer.py`): minimizar MSE entre la curva de infectados s
 
 ## 📚 Documentación y Referencias
 - [`docs/methodology.md`](docs/methodology.md): ecuaciones SEIR (`dS/dt`, `dE/dt`, `dI/dt`, `dR/dt`), calibración MSE (`optimizer.py` con `ModeloSEIR`), metodología de datos sintéticos/reales.
-- [`docs/dataset_info.md`](docs/dataset_info.md): cobertura temporal (2020-2026), variables confirmadas, licencia del dataset (`apache-2.0`).
+- [`docs/dataset_info.md`](docs/dataset_info.md): cobertura temporal (2020-2026), variables confirmadas, licencia del dataset (`open-data-license`).
 - [`docs/notas_gemini.md`](docs/notas_gemini.md): notas verificadas del análisis inicial (dataset NO contiene R0 puro; derivable; Rt varía con vacunación e inmunidad natural; modelo propuesto SIR/SEIR con `scipy.integrate.solve_ivp`).
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto está licenciado bajo la [Licencia Pública General de GNU Affero v3.0](LICENSE). El dataset de referencia utilizado para la calibración se distribuye bajo licencia Apache 2.0.
+Este proyecto está licenciado bajo la [Licencia Pública General de GNU Affero v3.0](LICENSE). 
+El dataset de referencia utilizado para la calibración se distribuye bajo licencia de datos abierta compatible.
 
 ---
 
 ## 📧 Contacto
 
-- **Autor**: Pedro Sordo Martínez (`amurlaniakea@gmail.com`)
+- **Autor**: Pedro Sordo Martínez
 - **GitHub**: [amurlaniakea/pathogen-forecast](https://github.com/amurlaniakea/pathogen-forecast)
-- **Hugging Face**: [magopredator/pathogen-forecast](https://huggingface.co/spaces/MagoPredator/pathogen-forecast)
-
+- **Hugging Face**: [MagoPredator](https://huggingface.co/MagoPredator)
 

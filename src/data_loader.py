@@ -1,3 +1,4 @@
+# SPDX-FileCopyrightText: 2026 Pedro Sordo Martínez <amurlaniakea@gmail.com>
 """Carga y limpieza del dataset COVID-19 de Kaggle."""
 # Copyright (C) 2026 Pedro Sordo Martínez <amurlaniakea@gmail.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
