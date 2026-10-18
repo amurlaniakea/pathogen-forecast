@@ -35,7 +35,8 @@ col1, col2 = st.columns(2)
 with col1:
     pais_inicial = st.selectbox(
         "País a simular y calibrar",
-        ["Spain", "Afghanistan", "United States", "China", "Brazil", "South Africa"]
+        ["Spain", "Afghanistan", "United States", "China", "Brazil", "South Africa",
+         "Mexico", "Germany", "France", "Greece", "Turkey", "Russia", "India"]
     )
     poblacion = st.number_input("Población base (millones)", 1.0, 8000.0, 8.0, 1.0) * 1_000_000
 
@@ -50,6 +51,13 @@ COORDENADAS_PAISES = {
     "China": [35.8617, 104.1954],
     "Brazil": [-14.2350, -51.9253],
     "South Africa": [-30.5595, 22.9375],
+    "Mexico": [23.6345, -102.5528],
+    "Germany": [51.1657, 10.4515],
+    "France": [46.2276, 2.2137],
+    "Greece": [39.0742, 21.8243],
+    "Turkey": [38.9637, 35.2433],
+    "Russia": [61.5240, 105.3188],
+    "India": [20.5937, 78.9629],
 }
 
 # --- 2. CARGA Y FILTRADO DE DATOS ---

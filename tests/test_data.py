@@ -12,5 +12,5 @@ def test_carga_fixture_sintetico():
     ruta = Path(__file__).resolve().parent / "fixtures" / "synthetic_covid.csv"
     loader = DataLoader(ruta)
     datos = loader.cargar_datos()
-    assert len(datos) == 6
+    assert len(datos) == 13
     assert datos.iloc[0]["reproduction_rate"] == 2.5
