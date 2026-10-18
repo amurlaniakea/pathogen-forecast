@@ -76,7 +76,7 @@ with col6:
     st.metric("Recuperados finales", f"{R_final:,.0f}")
 
 # Mapa interactivo (mapamundi básico con ubicación inicial)
-m = folium.Map(location=[20.0, 0.0], zoom_start=2, tiles="cartodb positron")
+m = folium.Map(location=[20.0, 0.0], zoom_start=2, tiles="OpenStreetMap")
 folium.CircleMarker(
     location=[40.4168, -3.7038],  # Ejemplo: Madrid (España)
     radius=10,
