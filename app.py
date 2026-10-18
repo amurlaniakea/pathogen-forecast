@@ -7,10 +7,9 @@
 from pathlib import Path
 
 import folium
+import pandas as pd
 import streamlit as st
 from streamlit_folium import st_folium
-
-import pandas as pd
 
 from data_loader import DataLoader
 from epimodels import ModeloSEIR
