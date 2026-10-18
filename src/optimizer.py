@@ -44,10 +44,10 @@ class OptimizadorSIR:
             beta, gamma = params
             try:
                 if self.modo == "dataframe":
-                    casos_obs = self.datos_df["new_cases"].fillna(0).astype(float).values
+                    casos_obs = self.datos_df["total_cases"].fillna(0).astype(float).values
                 else:
-                    casos_obs = np.array([float(f.get("new_cases", 0) or 0) for f in self.datos])
-                return self.error_beta_gamma(params, casos_obs, sigma_fijo)
+                    casos_obs = np.array([float(f.get("total_cases", 0) or 0) for f in self.datos])
+                return self.error_beta_gamma(params, casos_obs, sigma_fijo, N=N)
             except (ValueError, KeyError):
                 r0_sim = beta / gamma if gamma > 0 else 0
                 return float((r0_sim - rt_promedio) ** 2)
@@ -58,9 +58,10 @@ class OptimizadorSIR:
         beta_cal, gamma_cal = resultado.x
         return float(beta_cal), float(gamma_cal)
 
-    def error_beta_gamma(self, params: np.ndarray, casos_reales: np.ndarray, sigma_fijo: float = 0.2) -> float:
+    def error_beta_gamma(self, params: np.ndarray, casos_reales: np.ndarray, sigma_fijo: float = 0.2, N: float = 1_000_000) -> float:
         beta, gamma = params
-        modelo = ModeloSEIR(beta=beta, gamma=gamma, sigma=sigma_fijo, N=1_000_000)
-        _, y = modelo.simular(S0=999_900, E0=0, I0=100, R0=0, dias=len(casos_reales))
-        pred = y[2]  # I (infectados) en SEIR
+        I0 = max(10, int(N * 0.0001))
+        modelo = ModeloSEIR(beta=beta, gamma=gamma, sigma=sigma_fijo, N=N)
+        _, y = modelo.simular(S0=N - I0, E0=0, I0=I0, R0=0, dias=len(casos_reales))
+        pred = y[2] + y[3]  # I + R (prevalencia acumulada: infectados actuales + recuperados)
         return float(np.mean((pred - casos_reales) ** 2))
