@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: 2026 Pedro Sordo Martínez <amurlaniakea@gmail.com>
-"""Interfaz visual interactiva para pathogen-forecast (streamlit + folium)."""
-# Copyright (C) 2026 Pedro Sordo Martínez <amurlaniakea@gmail.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
+"""Interfaz visual interactiva para pathogen-forecast (streamlit + folium)."""
 
 from pathlib import Path
 
 import folium
+import numpy as np
 import pandas as pd
 import streamlit as st
 from streamlit_folium import st_folium
@@ -15,20 +15,18 @@ from data_loader import DataLoader
 from epimodels import ModeloSEIR
 from optimizer import OptimizadorSIR
 
-st.set_page_config(page_title="pathogen-forecast", layout="wide")
-st.title("pathogen-forecast — Predicción epidemiológica institucional")
+st.set_page_config(page_title="Pathogen Forecast", layout="wide")
+st.title("🦠 Pathogen Forecast — Predicción Epidemiológica Institucional")
 st.markdown("**Autor:** Pedro Sordo Martínez <amurlaniakea@gmail.com> | **Licencia:** AGPL-3.0-or-later")
 
-# Controles interactivos
+# --- 1. CONTROLES INTERACTIVOS ---
 col1, col2 = st.columns(2)
 with col1:
-    r_contagiosidad = st.slider("R de contagiosidad (reproduction_rate aproximado)", 0.5, 10.0, 3.0, 0.1)
+    r_objetivo = st.slider("R0 de contagiosidad (Escenario What-If)", 0.5, 10.0, 3.0, 0.1)
     dias = st.slider("Días de simulación", 30, 730, 365, 30)
 with col2:
-    pais = st.selectbox("País inicial (ejemplo del dataset)", ["Spain", "Afghanistan", "United States", "Global"])
+    pais_inicial = st.selectbox("País de origen del brote", ["Spain", "Afghanistan", "United States", "China", "Brazil", "South Africa", "Global"])
     poblacion = st.number_input("Población base (millones)", 1.0, 8000.0, 8.0, 1.0) * 1_000_000
-
-import os
 
 COORDENADAS_PAISES = {
     "Spain": [40.4637, -3.7492],
@@ -39,72 +37,91 @@ COORDENADAS_PAISES = {
     "South Africa": [-30.5595, 22.9375],
 }
 
-# Datos sintéticos por defecto (o dataset real si existe, vía env var)
+# --- 2. CARGA DE DATOS ---
+import os
+
 ruta_env = os.getenv("COVID_DATASET_PATH", "")
 ruta_relativa = Path(__file__).resolve().parent / "tests" / "fixtures" / "synthetic_covid.csv"
 ruta_dataset = Path(ruta_env) if ruta_env else ruta_relativa
+
 if ruta_dataset.exists():
     loader = DataLoader(ruta_dataset)
     datos = loader.cargar_datos()
 else:
-    # Fallback: DataFrame simulado básico con coordenadas geográficas
     datos = pd.DataFrame({
-        "reproduction_rate": [2.5, 2.3, 2.0],
-        "new_cases": [10, 20, 15],
-        "total_cases": [100, 120, 135],
-        "icu_patients": [5, 8, 10],
+        "location": ["Spain", "Afghanistan", "United States"],
+        "total_cases": [10000, 5000, 50000],
+        "reproduction_rate": [2.5, 3.0, 2.8],
+        "new_cases": [10, 15, 25],
+        "icu_patients": [5, 4, 7],
         "lat": [40.4637, 33.9391, 37.0902],
         "lon": [-3.7492, 67.7099, -95.7129],
     })
 
-# Calibración (opcional, con datos sintéticos/reales)
+# --- 3. CALIBRACIÓN Y SIMULACIÓN ---
 if datos is not None and not datos.empty:
     optimizador = OptimizadorSIR(datos)
     try:
         beta_cal, gamma_cal = optimizador.calibrar(N=poblacion)
-        st.success(f"Calibración real completada: beta={beta_cal:.3f}, gamma={gamma_cal:.3f}, R0={beta_cal/gamma_cal:.2f}")
+        st.success(f"✅ Calibración exitosa: β={beta_cal:.3f}, γ={gamma_cal:.3f}, R0 base={beta_cal/gamma_cal:.2f}")
     except (ValueError, RuntimeError) as e:
         beta_cal, gamma_cal = 0.3, 0.1
-        st.warning(f"Calibración con datos sintéticos de respaldo (error con datos reales: {e})")
+        st.warning(f"⚠️ Usando parámetros de respaldo (Error en calibración: {e})")
 else:
     beta_cal, gamma_cal = 0.3, 0.1
-    st.info("Usando parámetros por defecto (sin datos disponibles).")
 
-# Simulación SEIR (con latencia)
-modelo = ModeloSEIR(beta=beta_cal, gamma=gamma_cal, sigma=0.2, N=poblacion)
+# Ajuste dinámico: el slider modifica beta para coincidir con el R0 deseado por el usuario
+beta_ajustado = r_objetivo * gamma_cal
+
+modelo = ModeloSEIR(beta=beta_ajustado, gamma=gamma_cal, sigma=0.2, N=poblacion)
 t, y = modelo.simular(S0=poblacion - 100, E0=50, I0=100, R0=0, dias=dias)
 
-# Métricas SEIR
+# Validación de robustez matemática
+if t is None or len(t) == 0:
+    st.error("❌ Error crítico: La integración matemática (solve_ivp) falló. Revisa los parámetros.")
+    st.stop()
+
+# Métricas SEIR y cálculo del pico
 S_final, E_final, I_final, R_final = y[:, -1]
+dia_pico = int(t[np.argmax(y[2])])
+
 col3, col4, col5, col6 = st.columns(4)
-with col3:
-    st.metric("Susceptibles finales", f"{S_final:,.0f}")
-with col4:
-    st.metric("Expuestos finales", f"{E_final:,.0f}")
-with col5:
-    st.metric("Infectados finales", f"{I_final:,.0f}")
-with col6:
-    st.metric("Recuperados finales", f"{R_final:,.0f}")
+col3.metric("Susceptibles finales", f"{S_final:,.0f}")
+col4.metric("Expuestos finales", f"{E_final:,.0f}")
+col5.metric("Infectados activos (Pico)", f"{np.max(y[2]):,.0f}", delta=f"Día {dia_pico}")
+col6.metric("Recuperados finales", f"{R_final:,.0f}")
 
-# Mapa interactivo (mapamundi básico con ubicación inicial)
+# --- 4. MAPA INTERACTIVO PROFESIONAL ---
 m = folium.Map(location=[20.0, 0.0], zoom_start=2, tiles="OpenStreetMap")
-folium.CircleMarker(
-    location=[40.4168, -3.7038],  # Ejemplo: Madrid (España)
-    radius=10,
-    popup=f"País inicial: {pais}\nR aproximado: {r_contagiosidad}\nSimulación: {dias} días",
-    color="red",
-    fill=True,
-).add_to(m)
 
-# Añadir puntos simulados de expansión con coordenadas reales o de respaldo
-if {"lat", "lon"}.issubset(datos.columns):
-    for _, row in datos.iterrows():
+# Marcador del país de origen
+if pais_inicial in COORDENADAS_PAISES:
+    folium.CircleMarker(
+        location=COORDENADAS_PAISES[pais_inicial],
+        radius=18,
+        popup=f"<b>📍 Origen: {pais_inicial}</b><br>Simulación a {dias} días<br>R0 objetivo: {r_objetivo}",
+        color="blue", fill=True, fill_color="blue", fill_opacity=0.8, weight=2
+    ).add_to(m)
+
+# Visualización de expansión por país (AGREGADA: un solo marcador por país)
+if {"lat", "lon", "location"}.issubset(datos.columns):
+    datos_unicos = datos.drop_duplicates(subset=["location"], keep="last")
+    for _, row in datos_unicos.iterrows():
+        pais_nombre = str(row.get("location", "Desconocido"))
+        lat, lon = float(row["lat"]), float(row["lon"])
+        casos = float(row.get("total_cases", 1000))
+        radio = min(50, max(5, int(casos / 10000)))
+        if casos < 10000:
+            color, severidad = "green", "Baja"
+        elif casos < 100000:
+            color, severidad = "orange", "Media"
+        else:
+            color, severidad = "red", "Alta"
         folium.CircleMarker(
-            location=[float(row["lat"]), float(row["lon"])],
-            radius=10,
-            popup=f"País: {row.get('location', 'Simulado')}\nR aproximado: {r_contagiosidad}\nSimulación: {dias} días",
-            color="red",
-            fill=True,
+            location=[lat, lon],
+            radius=radio,
+            popup=f"<b>{pais_nombre}</b><br>📊 Casos: {casos:,.0f}<br>⚠️ Severidad: {severidad}<br>🔄 R0 simulado: {r_objetivo}",
+            color=color, fill=True, fill_color=color, fill_opacity=0.6
         ).add_to(m)
 else:
     # Fallback: puntos aleatorios alrededor del mundo (como antes)
@@ -116,13 +133,13 @@ else:
         folium.CircleMarker(
             location=[lat, lon],
             radius=3,
-            color="orange",
-            fill=True,
-            fill_opacity=0.6,
+            color="orange", fill=True, fill_opacity=0.6,
         ).add_to(m)
 
-st.subheader("Mapa mundial interactivo de expansión simulada")
+st.subheader("🌍 Mapa mundial interactivo de expansión simulada")
 st_folium(m, width=1200, height=600)
 
-# Nota de verificación
-st.info("Nota: esta interfaz usa datos sintéticos por defecto o datos reales del dataset de Kaggle (`reproduction_rate` como referencia) para calibración. La expansión visual es una simulación teórica basada en el modelo SEIR básico.")
+st.info(
+    "💡 **Nota técnica**: El radio y color de cada marcador reflejan la magnitud real de los casos. "
+    "El slider 'R0 de contagiosidad' ajusta dinámicamente la tasa de transmisión (β) para proyectar escenarios 'what-if' en tiempo real."
+)
