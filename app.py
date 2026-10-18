@@ -62,7 +62,10 @@ if ruta_dataset.exists():
     datos_completos = loader.cargar_datos()
 
 # Filtrar estrictamente por el país seleccionado para la calibración
-datos_pais = datos_completos[datos_completos["location"] == pais_inicial].sort_values("date").reset_index(drop=True)
+if "date" in datos_completos.columns:
+    datos_pais = datos_completos[datos_completos["location"] == pais_inicial].sort_values("date").reset_index(drop=True)
+else:
+    datos_pais = datos_completos[datos_completos["location"] == pais_inicial].reset_index(drop=True)
 
 # --- 3. CALIBRACIÓN Y SIMULACIÓN ---
 if not datos_pais.empty:

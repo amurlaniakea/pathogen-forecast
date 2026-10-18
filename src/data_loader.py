@@ -20,5 +20,5 @@ class DataLoader:
         return pd.read_csv(
             self.ruta,
             dtype={"reproduction_rate": "float32", "new_cases": "float32"},
-            usecols=lambda c: c in {"reproduction_rate", "new_cases", "total_cases", "icu_patients", "lat", "lon", "location"},
+            usecols=lambda c: c in {"reproduction_rate", "new_cases", "total_cases", "icu_patients", "lat", "lon", "location", "date"},
         )
