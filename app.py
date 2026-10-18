@@ -30,6 +30,15 @@ with col2:
 
 import os
 
+COORDENADAS_PAISES = {
+    "Spain": [40.4637, -3.7492],
+    "Afghanistan": [33.9391, 67.7099],
+    "United States": [37.0902, -95.7129],
+    "China": [35.8617, 104.1954],
+    "Brazil": [-14.2350, -51.9253],
+    "South Africa": [-30.5595, 22.9375],
+}
+
 # Datos sintéticos por defecto (o dataset real si existe, vía env var)
 ruta_env = os.getenv("COVID_DATASET_PATH", "")
 ruta_relativa = Path(__file__).resolve().parent / "tests" / "fixtures" / "synthetic_covid.csv"
@@ -38,12 +47,14 @@ if ruta_dataset.exists():
     loader = DataLoader(ruta_dataset)
     datos = loader.cargar_datos()
 else:
-    # Fallback: DataFrame simulado básico para que la app nunca falle
+    # Fallback: DataFrame simulado básico con coordenadas geográficas
     datos = pd.DataFrame({
         "reproduction_rate": [2.5, 2.3, 2.0],
         "new_cases": [10, 20, 15],
         "total_cases": [100, 120, 135],
         "icu_patients": [5, 8, 10],
+        "lat": [40.4637, 33.9391, 37.0902],
+        "lon": [-3.7492, 67.7099, -95.7129],
     })
 
 # Calibración (opcional, con datos sintéticos/reales)
@@ -85,20 +96,30 @@ folium.CircleMarker(
     fill=True,
 ).add_to(m)
 
-# Añadir puntos simulados de expansión (simplificado: puntos aleatorios alrededor del mundo)
-import random
-
-random.seed(42)
-for _ in range(20):
-    lat = random.uniform(-60, 60)
-    lon = random.uniform(-180, 180)
-    folium.CircleMarker(
-        location=[lat, lon],
-        radius=3,
-        color="orange",
-        fill=True,
-        fill_opacity=0.6,
-    ).add_to(m)
+# Añadir puntos simulados de expansión con coordenadas reales o de respaldo
+if {"lat", "lon"}.issubset(datos.columns):
+    for _, row in datos.iterrows():
+        folium.CircleMarker(
+            location=[float(row["lat"]), float(row["lon"])],
+            radius=10,
+            popup=f"País: {row.get('location', 'Simulado')}\nR aproximado: {r_contagiosidad}\nSimulación: {dias} días",
+            color="red",
+            fill=True,
+        ).add_to(m)
+else:
+    # Fallback: puntos aleatorios alrededor del mundo (como antes)
+    import random
+    random.seed(42)
+    for _ in range(20):
+        lat = random.uniform(-60, 60)
+        lon = random.uniform(-180, 180)
+        folium.CircleMarker(
+            location=[lat, lon],
+            radius=3,
+            color="orange",
+            fill=True,
+            fill_opacity=0.6,
+        ).add_to(m)
 
 st.subheader("Mapa mundial interactivo de expansión simulada")
 st_folium(m, width=1200, height=600)
