@@ -1,3 +1,3 @@
-iso_code,continent,location,date,total_cases,new_cases,reproduction_rate,icu_patients,total_vaccinations,case_fatality_rate
-ESP,Europe,Spain,2020-03-01,100,10,2.5,5,0,1.0
-ESP,Europe,Spain,2020-03-02,120,20,2.3,8,0,1.2
+iso_code,continent,location,date,total_cases,new_cases,reproduction_rate,icu_patients,total_vaccinations,case_fatality_rate,lat,lon
+ESP,Europe,Spain,2020-03-01,100,10,2.5,5,0,1.0,40.4637,-3.7492
+ESP,Europe,Spain,2020-03-02,120,20,2.3,8,0,1.2,40.4637,-3.7492
